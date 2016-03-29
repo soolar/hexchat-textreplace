@@ -4,7 +4,7 @@ A text replacement plugin for HexChat
 Requires the [HexChat Lua Interface](https://github.com/mniip/hexchat-lua).
 
 ## Installation
-Place lua.so from HexChat Lua Interface and textreplace.lua from this repository in `~/.config/hexchat/addons` on Linux, or `%APPDATA%\\HexChat\\addons` on Windows.
+Place lua.so from HexChat Lua Interface and textreplace.lua from this repository in `~/.config/hexchat/addons` on Linux, or `%APPDATA%\HexChat\addons` on Windows.
 
 ## Commands
 ### `/textrepinput <text>`

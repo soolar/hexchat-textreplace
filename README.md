@@ -56,6 +56,9 @@ Bob -> B
 
 Note that you can do more advanced things, such as providing nickname coloration by adding color codes to the output, but you can generally only modify how nicknames and message text display, not system things like the format of a join or part message (aside from the nickname and/or the part reason). Also, channel names are generally excluded.
 
+## Notes
+All inputs are case sensitive! However, you can leverage the full power of [patterns](http://www.lua.org/manual/5.2/manual.html#6.4.1) and the [gsub](http://www.lua.org/manual/5.2/manual.html#pdf-string.gsub) function, if you feel the need! Keep in mind that the order of execution of the replacements is not guaranteed to stay the same as you add new replacements, so you *CAN NOT* reliably count on order of execution to pull stunts with what order things are replaced in, sorry!
+
 ## Known Issues
 1. Using this to provide alternate names for your friends (for example) will remove the ability to right click their name in chat for the popup window.
 2. It WILL modify channel names in the body of messages, which can be confusing, and prevents double clicking the channel name to join it (or more specifically, makes it so you'll join the wrong channel, which could be awkward).

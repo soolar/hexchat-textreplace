@@ -23,8 +23,11 @@ do
   conf:close()
   local storepattern = {"","([^","\n]+)","([^","\n]+)","\n"}
   for t,delimiter in pairs(delimiters) do
-    for a,b in conftext:gmatch(table.concat(storepattern,delimiter)) do
-      t[a] = b
+    for pat,reppre in conftext:gmatch(table.concat(storepattern,delimiter)) do
+      pat = pat:gsub("%a",function(letter)
+        return "[" .. string.lower(letter) .. string.upper(letter) .. "]"
+      end)
+      t[pat] = reppre
     end
   end
 end
@@ -133,6 +136,7 @@ local function save()
   local conf = io.open(conffilename, "w")
   for t,delimiter in pairs(delimiters) do
     for k,v in pairs(t) do
+      k = k:gsub("%[(%l)%u%]", "%1")
       conf:write(delimiter,k,delimiter,v,delimiter,"\n")
     end
   end
@@ -165,7 +169,7 @@ hexchat.hook_command("TEXTREPOUTPUT", function(words,wordeols)
     return hexchat.EAT_ALL
   end
   if not wordeols[2] and repls[repin] then
-    print("Text Replacement \x034removed\x03: \"" .. repin .. "\x0f\" -> \"" .. repls[repin] .. "\"")
+    print("Text Replacement \x034removed\x03: \"" .. repin .. "\x0f\" -> \"" .. repls[repin] .. "\x0f\"")
   end
   repls[repin] = wordeols[2]
   if wordeols[2] then

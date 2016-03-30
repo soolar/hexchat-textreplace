@@ -9,8 +9,9 @@ local urlpattern = "%S*%a%S*%.%a%S*[^%s)]"
 local chanpattern = "#" .. string.rep("[^ \x07,]", 49, "?")
 
 local repls = {}
+local prfxs = {}
 
-local delimiters = { [repls] = "\x01repl\x01" }
+local delimiters = { [repls] = "\x01", [prfxs] = "\x04" }
 
 -- load from the config file
 do
@@ -56,7 +57,11 @@ local function makehook(event, suffixes)
           arg = arg:gsub(chanpattern, protect)
           -- now replace any pattern matches
           for pat,repl in pairs(repls) do
-            arg = arg:gsub(pat,repl .. "\x0f" .. (suffixes[i] or ""))
+            arg = arg:gsub(pat,repl)
+          end
+          -- now evaluate for any prefixes
+          for pat,pre in pairs(prfxs) do
+            arg = arg:gsub(pat,pre .. "%0\x0f" .. (suffixes[i] or ""))
           end
           -- restore URLs and channel names
           arg = arg:gsub("\x00(%d+)\x00", protected)
@@ -107,13 +112,19 @@ addhook("Topic Creation", { false, "\x0322", false })
 addhook("Your Action", { "\x0317", "\x0317", false })
 addhook("Your Message", { "\x0319", nil, false, false })
 
-hexchat.hook_command("DUMPREPLS", function()
+hexchat.hook_command("TEXTREPLACEDUMP", function()
+  print("repls\t---------------------")
   for k,v in pairs(repls) do
     print(k, "->", v)
   end
+  print("prfxs\t---------------------")
+  for k,v in pairs(prfxs) do
+    k = k:gsub("%[(%a)%a%]","%1")
+    print(k, "->", v .. k .. "\x0f")
+  end
 
   return hexchat.EAT_ALL
-end, "Usage: DUMPREPLS, outputs all replacements set up for Text Replace to the current window.")
+end, "Usage: TEXTREPLACEDUMP, outputs all replacements set up for Text Replace to the current window.")
 
 local function save()
   local conf = io.open(conffilename, "w")
@@ -160,4 +171,19 @@ hexchat.hook_command("TEXTREPOUTPUT", function(words,wordeols)
   save()
   return hexchat.EAT_ALL
 end, "Usage: TEXTREPOUTPUT <text>, sets up a replacement so that whatever text was specified by TEXTREPINPUT will be replaced with the text provided to this command. Does not work without having called TEXTREPINPUT in the first place. Call with no arguments to delete a given replacement.")
+
+hexchat.hook_command("PREFIX", function(words,wordeols)
+  local pat = words[2]
+  local pre = wordeols[3]
+  if not pre then
+    print("Please provide at least two arguments!")
+    return hexchat.EAT_ALL
+  end
+  pat = pat:gsub("%a",function(letter)
+    return "[" .. string.lower(letter) .. string.upper(letter) .. "]"
+  end)
+  prfxs[pat] = pre
+  save()
+end, "Usage: PREFIX <text> <prefix>, whenever text (one word maximum) is found in a message, it will have prefix placed immediately before it. Unlike TEXTREP, this is case insensitive!")
+
 

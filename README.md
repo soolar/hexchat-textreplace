@@ -7,6 +7,9 @@ Requires the [HexChat Lua Interface](https://github.com/mniip/hexchat-lua).
 Place lua.so from HexChat Lua Interface and textreplace.lua from this repository in `~/.config/hexchat/addons` on Linux, or `%APPDATA%\HexChat\addons` on Windows.
 
 ## Commands
+### `/textrep <input> <output>`
+Sets input to be replaced by output whenever it shows up in a message. Input is limited to one word in this command, but output can be however long you want.
+
 ### `/textrepinput <text>`
 Sets the current input text to the provided text. This text can be any arbitrary amount of text, including multiple words. Whenever this text shows up in almost any message, it will be replaced with whatever output you then specify with `/textrepoutput`.
 
@@ -30,8 +33,7 @@ Take the following conversation, before setting up any replacements with this sc
 Now let's execute the following commands:
 
 ```
-/textrepinput test
-/textrepoutput success
+/textrep test success
 /textrepinput Alice
 /textrepoutput A
 /textrepinput Bob
@@ -61,6 +63,5 @@ All inputs are case sensitive! However, you can leverage the full power of [patt
 
 ## Known Issues
 1. Using this to provide alternate names for your friends (for example) will remove the ability to right click their name in chat for the popup window.
-2. It WILL modify channel names in the body of messages, which can be confusing, and prevents double clicking the channel name to join it (or more specifically, makes it so you'll join the wrong channel, which could be awkward).
-3. Is not smart enough to avoid modifying the body of a URL, yet.
-4. Does not allow for coloration/nicknaming in the userlist of a channel, which I believe is utterly impossible with the Lua HexChat addition I am using, but I have not looked in to that thoroughly yet. However, even if it was possible, I'm not sure if that would be a good idea, because of issue #1.
+2. It might be a little overprotective on URLs, since I used a very... simplified pattern to match them.
+3. Does not allow for coloration/nicknaming in the userlist of a channel, which I believe is utterly impossible with the Lua HexChat addition I am using, but I have not looked in to that thoroughly yet. However, even if it was possible, I'm not sure if that would be a good idea, because of issue #1.

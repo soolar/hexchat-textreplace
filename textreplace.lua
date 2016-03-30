@@ -13,6 +13,9 @@ local prfxs = {}
 
 local delimiters = { [repls] = "\x01", [prfxs] = "\x04" }
 
+local startfrontier = "%f[%w]"
+local endfrontier   = "%f[%W]"
+
 -- load from the config file
 do
   local conf = io.open(conffilename,"r")
@@ -57,11 +60,11 @@ local function makehook(event, suffixes)
           arg = arg:gsub(chanpattern, protect)
           -- now replace any pattern matches
           for pat,repl in pairs(repls) do
-            arg = arg:gsub(pat,repl)
+            arg = arg:gsub(startfrontier .. pat .. endfrontier,repl)
           end
           -- now evaluate for any prefixes
           for pat,pre in pairs(prfxs) do
-            arg = arg:gsub(pat,pre .. "%0\x0f" .. (suffixes[i] or ""))
+            arg = arg:gsub(startfrontier .. pat .. endfrontier,pre .. "%0\x0f" .. (suffixes[i] or ""))
           end
           -- restore URLs and channel names
           arg = arg:gsub("\x00(%d+)\x00", protected)

@@ -18,8 +18,11 @@ Exceptions to replacement are generally messages where exact text matters, such 
 ### `/textrepoutput <text>`
 Sets the replacement text for the current input. If used with no arguments provided, it will clear the current input from being replaced, if it is already in use.
 
-### `/dumprepls`
-Prints out a list of all current replacements.
+### `/prefix <text> <prefix>`
+Whenever text appears in a message (**case insensitive**) it is prepended with prefix. Prefixes are always processed after text replacements.
+
+### `/textreplacedump`
+Prints out the saved information.
 
 ## Example
 Take the following conversation, before setting up any replacements with this script:
@@ -64,4 +67,4 @@ All inputs are case sensitive! However, you can leverage the full power of [patt
 ## Known Issues
 1. Using this to provide alternate names for your friends (for example) will remove the ability to right click their name in chat for the popup window.
 2. It might be a little overprotective on URLs, since I used a very... simplified pattern to match them.
-3. Does not allow for coloration/nicknaming in the userlist of a channel, which I believe is utterly impossible with the Lua HexChat addition I am using, but I have not looked in to that thoroughly yet. However, even if it was possible, I'm not sure if that would be a good idea, because of issue #1.
+3. Does not allow for coloration/nicknaming in the userlist of a channel, which I believe is utterly impossible with the Lua HexChat addon I am using, but I have not looked in to that thoroughly yet. However, even if it was possible, I'm not sure if that would be a good idea, because of issue #1.
